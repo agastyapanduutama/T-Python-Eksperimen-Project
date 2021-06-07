@@ -1,0 +1,20 @@
+from gcloud import storage
+from oauth2client.service_account import ServiceAccountCredentials
+import os
+
+
+credentials_dict = {
+    'type': 'service_account',
+    'client_id': "103874984838406490687",
+    'client_email': "cmask-storage@green-cell-312416.iam.gserviceaccount.com",
+    'private_key_id': "fcbc59926fd3a21c82dae6265a5e78a9e50825c0",
+    'private_key': "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC8N8dWfyu9u9bq\ns7GfkD+/1B/mpkKFXcUHQMhY5AheovCVXANvrZREy6oSy7EUEHc1hmbajl7usy8H\nt0loBgQYilJlRMG7Lp0WwOFgHPQnvYo9iPC63BQwcPzLBZCK5RXObBhOoDmzYj/A\n7XOq66Ts9Op19SaHudnL1PROSb44FbcXRAtZlcLph5kco+Xf2Yu/Qj5rCQwJIOMd\nZU3/Di8zSKtfCcQXTqf6phmrzAKZTwmkdUQbrVuEc/LVuU87zAyj2AZKU8Un4i6M\n5NYEEP/ZaSSuPTrTfJFTi5VJA/95DnB6ytlF2JLqYnJ5Al2FAZTVX8nel6yXukq/\nEbDIgyIdAgMBAAECggEAHAZpJ7uxSWPD9Tfy4XmiyF8fLeKBIqcK7JDMlBHGHkNA\nM9kayODtZA34QaqzL/PgsCdWPsI2p++lt84mf7bvmrDT4nDJsOOYr9fh5wQApb8u\n64ktoQEef3T/awJl2oyQQedt+h0Y4lkleYZRs/g42zB/jbdGOKznXVaU1uhbirGN\nFq1ZIEnUGxoFCrTHbLYEjYNM9qSpBG2Ad4I3Oq7UfiDRqgThNgHvFGgPq5bF5cUW\nEh2YqDRTOXKnRKRRCIbSwnYbFebgqLXSQDkbQ/LfJ2S3AnkDuYfEdGwHCtk9Y9mt\ntPaqgWNrbQyCS0F9ihMCow2igVJsCuhyTCtwV4Bb2QKBgQD7HNom/fDKpsQapEf5\nFhFZLkjjnaD/r8cOSAkuvGYNhAaMgdZ6aUJFWo8I9ywPXxA2HCl1TLUwD17Ua7Vj\nYZYPMQw9vZYBYm6jAzkZLWMuN+M5b2j4MOTsO28AwwecL+dnOCiPFIsVXNiHiiN1\nttNA3pOjAC+/pwCRWbLl6Yi2WQKBgQC/4Y7ySpSLGiFPc9hN8maRCO8O8pcWqc+M\nC9z6cys4JhP12eMafMvhLUQMYSmCcg11K1FUXZKPWZ5UyIjzTOrNRLS/n5W/2NNp\nluxBIuLBvuiscT59lQyVlAeHNMpH4bqWyJiBWT1cfEju4YXuVFdnvIYvBABh9mYf\nnVJYEliZZQKBgFv9Tc1K6ZLTVLONyu/srZ5F3l3DuN7xvbH1oaeFTL1WyC9gwPlG\n5ggSDKP0KCfZY07vMiDOYPGiL9MRQfmOHjKifSGA+hq3vF/rJlea0OJ1hr/bmFCT\nWMlRXHCjAX6t7c9aO0Fu/SRuRsQgTq0otGrnHp5vyw4iV4rnmSmwS2zBAoGAIe+7\nv4CPSxbhA1Ni005m84nX9hXTwQ9hhMxoVedeonyhlR7nOr0NthKycVoR5F9Vn/58\nUOaH0FCyXx5kklttP8bCDQ4lhxvLMGaf/Fk2L7wbHLyep8lfw2i9+BzPFe2Hebma\nt23YG25j29QJQwCpwNAoD1Ku2qSgpUDG2orMHr0CgYApz6GsXGvsiXGycuUwBQ4T\nkte6tFU1FcXCC0RiN4ErrACGVD70Tti97h6VMFP5Idu73W/XqFK8bTrH5qRY3r/8\nSwUh6eMCdfAiiMnTm20yCqVt34oTw3VSjdwOhkuW9Gf2MR0ybJS4RFJw3vPEfys7\ngE/JVycxb0BUU+jNS9lUmw==\n-----END PRIVATE KEY-----\n",
+}
+credentials = ServiceAccountCredentials.from_json_keyfile_dict(
+    credentials_dict
+)
+client = storage.Client(credentials=credentials, project='cmask')
+
+bucket = client.get_bucket('cmask')
+blob = bucket.blob('myfile')
+blob.upload_from_filename('image/test.jpg')
