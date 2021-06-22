@@ -8,14 +8,14 @@ from skimage import morphology, filters
 os.system("clear")
 
 # Path folder for write image
-pathImage = "/home/pandu/Documents/skripsi/dataset/convert/"
+pathImage = "/home/pandu/Documents/eksperimen/image/imageframe"
 
 #Path url Folder Video
 path = "/home/pandu/Documents/eksperimen/video/"
 videoFile = os.listdir(path)
 
 # Name Video
-videoFile[0] = "s_cuci_tangan06.mp4"
+videoFile[0] = "s_cuci_tangan15.mp4"
 cap = cv2.VideoCapture(path+videoFile[0])
 
 # Check Total Frame
@@ -81,6 +81,9 @@ def allSkel(skel):
 
 while(True) and (frameIdx < (totalFrames-1)):
     ret, frame = cap.read()
+    # frame = cv2.rotate(frame, cv2.ROTATE_180)
+    # frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+    frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
     pct = (frameIdx/totalFrames)*100
 
     M = frame.shape[0]
@@ -161,11 +164,11 @@ while(True) and (frameIdx < (totalFrames-1)):
     # cv2.imshow("All", finMerge)
 
     # # Select Channel Where look clear
-    # cv2.imshow("Only Red Channel Color", r)
+    cv2.imshow("Only Red Channel Color", r)
     # cv2.imshow("Only A Channel Color", a)
 
     # Convert to Treshold with spesific channel color
-    retR, tholdR = cv2.threshold(s, 50, 255, cv2.THRESH_BINARY)
+    retR, tholdR = cv2.threshold(r, 50, 255, cv2.THRESH_BINARY)
     frameR = np.array(tholdR)
     cv2.imshow('Treshold Channel R color', frameR)
 
@@ -175,7 +178,7 @@ while(True) and (frameIdx < (totalFrames-1)):
         print(NameFile)
 
         # # Write File
-        # cv2.imwrite(pathImage+"/RGB/"+NameFile, frameR)
+        cv2.imwrite(pathImage+"/rgb/"+NameFile, frameR)
         # cv2.imwrite(pathImage+"/LAB/"+NameFile, a)
         # cv2.imwrite(pathImage+"/HSV/"+NameFile,hsvMerge)
 

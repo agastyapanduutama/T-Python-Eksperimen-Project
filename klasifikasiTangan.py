@@ -19,7 +19,7 @@ import cv2
 window = Tk()
 
 
-model = load_model("/home/pandu/Documents/eksperimen/model/keras_model.h5")
+model = load_model("/home/pandu/Documents/eksperimen/model/14jun21.h5")
 # model.summary()
 
 ## Video Part
@@ -27,7 +27,7 @@ videoPath = "/home/pandu/Documents/eksperimen/video/"
 videoFile = "s_cuci_tangan11.mp4"
 
 cap = cv2.VideoCapture(videoPath+videoFile)
-# cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(0)
 
 totalFrames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
 print(totalFrames)
@@ -35,28 +35,28 @@ print(totalFrames)
 frameIdx = 0
 ratio = 0.5
 
-ret, frame0 = cap.read()
-M = frame0.shape[0]
-N = frame0.shape[1]
+# ret, frame0 = cap.read()
+# M = frame0.shape[0]
+# N = frame0.shape[1]
 
-M = int(ratio*M)
-N = int(ratio*N)
-videoPathToSave = "/home/pandu/Documents/eksperimen/video"
+# M = int(ratio*M)
+# N = int(ratio*N)
+# videoPathToSave = "/home/pandu/Documents/eksperimen/video"
 
 poseCount = np.zeros(7, dtype=int)
-
-while(True) and (frameIdx < (totalFrames-1)):
+while True:
+# while(True) and (frameIdx < (totalFrames-1)):
     ret, frame0 = cap.read()
     pct = (frameIdx/totalFrames)*100
     frame0 = cv2.rotate(frame0, cv2.ROTATE_180)
 
-    M = frame0.shape[0]
-    N = frame0.shape[1]
+    # M = frame0.shape[0]
+    # N = frame0.shape[1]
 
-    mR = 224
-    nR = 224
+    mR = 180
+    nR = 180
 
-    frame = cv2.resize(frame0, (int(ratio*N), int(ratio*M)))
+    # frame = cv2.resize(frame0, (int(ratio*N), int(ratio*M)))
 
     #out.write(frame)
 

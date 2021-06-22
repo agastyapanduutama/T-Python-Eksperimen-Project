@@ -3,7 +3,7 @@ import cv2
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from keras.models import load_model
 from keras.preprocessing import image
 
@@ -51,7 +51,7 @@ from keras.preprocessing import image
 
 # rootPath = "C:\\Users\\INKOM06\\Pictures\\handwash\\mod1\\trdataset\\"
 
-model = load_model("/home/pandu/Documents/eksperimen/model/31mei21.h5")
+model = load_model("/home/pandu/Documents/eksperimen/model/handwashing.h5")
 # model.summary()
 
 ## Video Part
@@ -69,9 +69,9 @@ frameIdx = 0
 ratio = 0.5
 pTime = 0
 
-# ret, frame0 = cap.read()
-# M = frame0.shape[0]
-# N = frame0.shape[1]
+ret, frame0 = cap.read()
+M = frame0.shape[0]
+N = frame0.shape[1]
 
 # M = int(ratio*M)
 # N = int(ratio*N)
@@ -85,80 +85,55 @@ poseCount = np.zeros(7, dtype=int)
 
 while True:
 # while(True) and (frameIdx < (totalFrames-1)):
-    ret, frameNA = cap.read()
+    ret, frame0 = cap.read()
     pct = (frameIdx/totalFrames)*100
-    frame0 = frameNA
-    frame = frameNA
-    # cv2.imshow("kamera", frame0)
+    # frame0 = cv2.rotate(frame0, cv2.ROTATE_180)
+    frame0 = frame0
 
-    # frame0 = cv2.rotate(frameNA, cv2.ROTATE_180)
-    # cv2.imshow("kamera rotate 180", frame0)
+    M = frame0.shape[0]
+    N = frame0.shape[1]
 
-    # frame0 = cv2.rotate(frameNA, cv2.ROTATE_90_CLOCKWISE)
-    # cv2.imshow("kamera rotate 90", frame1)
+    mR = 224
+    nR = 224
 
-    # frame0 = cv2.rotate(frameNA, cv2.ROTATE_90_COUNTERCLOCKWISE)
-    # cv2.imshow("kamera rotate 270", frame2)
-
-    # M = frame0.shape[0]
-    # N = frame0.shape[1]
-
-    mR = 180
-    nR = 180
-
-    # frame = cv2.resize(frame0, (int(ratio*N), int(ratio*M)))
+    frame = cv2.resize(frame0, (int(ratio*N), int(ratio*M)))
 
     #out.write(frame)
 
     inFrame = cv2.resize(frame0, (nR, mR))
 
-    b, g, r = cv2.split(inFrame)
-    
-    [H, S, V] = cv2.split(inFrame)
-    retR, tholdR = cv2.threshold(r, 50, 255, cv2.THRESH_BINARY)
-    frameR = np.array(tholdR)
-    # cv2.imshow('Treshold Channel R color', frameR)
+    [B, G, R] = cv2.split(inFrame)
+    ret3, inFrameR = cv2.threshold(R, 50, 255, cv2.THRESH_BINARY)
+    cv2.namedWindow("Input frames", cv2.WINDOW_NORMAL)
+    cv2.imshow("Input frames", inFrameR)
 
-    # [B, G, R] = cv2.split(inFrame)
-    # ret3, inFrameR = cv2.threshold(R, 50, 255, cv2.THRESH_BINARY)
-    # cv2.namedWindow("Input frames", cv2.WINDOW_NORMAL)
-    # cv2.imshow("Input frames", inFrameR)
-
-    rgbFrame = cv2.merge([frameR, frameR, frameR])
+    rgbFrame = cv2.merge([inFrameR, inFrameR, inFrameR])
 
     test_image = image.img_to_array(rgbFrame)
     test_image = np.expand_dims(test_image, axis=0)
     result = model.predict(test_image)
 
     poseIdx = np.argmax(result, axis=1)
-    print(poseIdx)
     poseCount[poseIdx[0]] = poseCount[poseIdx[0]] + 1
 
-    # position = (10, 40)
-    # frameIdxDisp = frameIdx + 10000
-    # frameIdxDispStr = str(frameIdxDisp)[1:]
+    position = (10, 40)
+    frameIdxDisp = frameIdx + 10000
+    frameIdxDispStr = str(frameIdxDisp)[1:]
 
-    # infoStr = "%2.2f" % (pct)
-    # infoStr = "Frame No: "+frameIdxDispStr + \
-    #     " ["+infoStr+"%] Pose index: "+str(poseIdx[0])
-    # print(infoStr)
+    infoStr = "%2.2f" % (pct)
+    infoStr = "Frame No: "+frameIdxDispStr + \
+        " ["+infoStr+"%] Pose index: "+str(poseIdx[0])
+    print(infoStr)
 
-    # cv2.putText(frame, infoStr, position,cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0, 0), 2)
-    cTime = time.time()
-    fps = 1 / (cTime - pTime)
-    pTime = cTime
+    cv2.putText(frame, infoStr, position,
+                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0, 0), 2)
+    cv2.imshow("RGB Video", frame)
 
-    print(int(fps))
-
-    # cv2.putText(frame, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_PLAIN,3, (255, 0, 0), 3)
-    # cv2.imshow("RGB Video", frame)
-
-    # if saveVideo == True:
-    #   out.write(frame)
-
-    # frameIdx += 1
+    frameIdx += 1
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+
+
 cap.release()
 cv2.destroyAllWindows()
 
