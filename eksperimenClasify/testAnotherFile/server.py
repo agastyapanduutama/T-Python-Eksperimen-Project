@@ -7,9 +7,15 @@ import struct  # new
 import zlib
 import os
 import time
-
 from keras.models import load_model
 from keras.preprocessing import image
+# Another File Python
+# import summary
+import koneksi
+
+memulai = "INSERT INTO t_log(log)VALUES ('Menghubungkan server')"
+koneksi.cursor.execute(memulai)
+koneksi.conn.commit()
 
 # Load Model
 model = load_model("/home/pandu/Documents/eksperimen/model/16jun21.h5")
@@ -17,7 +23,7 @@ os.system("clear")
 
 # Set Connection
 HOST = '192.168.1.17'
-PORT = 8080
+PORT = 9090
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print('Socket created')
@@ -41,40 +47,37 @@ poseCount = np.zeros(7, dtype=int)
 
 notResponse = 0
 
-def restartSocket():
-    os.system(
-        "python3 /home/pandu/Documents/eksperimen/eksperimenClasify/testAnotherFile/server.py")
-
 def showJson(poseCount, totalFrames):
     hasil = {
         "NumPose": poseCount,
         "NumFrame": totalFrames
     }
-    print(hasil)
-    # restartSocket()
-
+    # print(poseCount)
+    summary = "INSERT INTO t_summary(poseCount, totalFrames)VALUES ('"+str(poseCount)+"','" +str(totalFrames)+"' )"
+    print(summary)
+    koneksi.cursor.execute(summary)
+    koneksi.conn.commit()
+    print("Berhasil memasukan ke database")
+    # summary.summariseTheResult(poseCount, totalFrames)
 
 while True:
     while len(data) < payload_size:
         print("Recv: {}".format(len(data)))
+        
+        # If not receive data
         if len(data) < payload_size:
             notResponse += 1
             print(notResponse)
             if notResponse > 500:
                 showJson(poseCount, totalFrames)
                 if showJson:
-                    time.sleep(1)
-                    # restartSocket()
                     break
-            # else:
-            #     noAction = 0
-        
+
         data += conn.recv(4096)
-        print(data)
+
 
     print("Done Recv: {}".format(len(data)))
     packed_msg_size = data[:payload_size]
-    print(packed_msg_size)
     data = data[payload_size:]
     msg_size = struct.unpack(">L", packed_msg_size)[0]
     print("msg_size: {}".format(msg_size))
@@ -97,13 +100,15 @@ while True:
     poseCount[poseIdx[0]] = poseCount[poseIdx[0]] + 1
     totalFrames += 1
 
+    # If not action
     label = labels[np.argmax(result)]
     if label == "Tidak ada gerakan":
         print(noAction)
         noAction += 1
         if noAction > 50:
-            print(poseCount, totalFrames)
-            # break
+            showJson(poseCount, totalFrames)
+            if showJson:
+                break
     else:
         noAction = 0
 
