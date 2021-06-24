@@ -10,7 +10,8 @@ import time
 from keras.models import load_model
 from keras.preprocessing import image
 # Another File Python
-# import summary
+import summary
+from summary import data as kesimpulan
 import koneksi
 
 memulai = "INSERT INTO t_log(log)VALUES ('Menghubungkan server')"
@@ -47,7 +48,7 @@ poseCount = np.zeros(7, dtype=int)
 
 notResponse = 0
 
-def showJson(poseCount, totalFrames):
+def breakProgram(poseCount, totalFrames):
     hasil = {
         "NumPose": poseCount,
         "NumFrame": totalFrames
@@ -58,7 +59,7 @@ def showJson(poseCount, totalFrames):
     koneksi.cursor.execute(summary)
     koneksi.conn.commit()
     print("Berhasil memasukan ke database")
-    # summary.summariseTheResult(poseCount, totalFrames)
+    kesimpulan()
 
 while True:
     while len(data) < payload_size:
@@ -69,7 +70,7 @@ while True:
             notResponse += 1
             print(notResponse)
             if notResponse > 500:
-                showJson(poseCount, totalFrames)
+                breakProgram(poseCount, totalFrames)
                 break
 
         data += conn.recv(4096)
@@ -105,7 +106,7 @@ while True:
         print(noAction)
         noAction += 1
         if noAction > 50:
-            showJson(poseCount, totalFrames)
+            breakProgram(poseCount, totalFrames)
             break
     else:
         noAction = 0
@@ -114,7 +115,7 @@ while True:
     cv2.waitKey(1)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        showJson(poseCount, totalFrames)
+        breakProgram(poseCount, totalFrames)
         break
 
 cv2.destroyAllWindows()

@@ -7,11 +7,10 @@ import pickle
 import zlib
 import numpy as np
 import summary
-import errno
 # import inspect
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect(('localhost', 8080))
+client_socket.connect(('192.168.1.17', 9090))
 connection = client_socket.makefile('wb')
 
 # Load Video
@@ -23,7 +22,6 @@ cam.set(4, 240)
 
 img_counter = 0
 frameIdx = 0
-resetConnection = 0
 
 frameVideo = cam.get(cv2.CAP_PROP_FRAME_COUNT)
 print(frameVideo)
@@ -52,22 +50,8 @@ while True:
         size = len(data)
 
         print("{}: {}".format(img_counter, size))
-        
+        client_socket.sendall(struct.pack(">L", size) + data)
         img_counter += 1
-
-        try:
-            print("mengirim data")
-            client_socket.sendall(struct.pack(">L", size) + data)
-        except socket.error as e:
-            print("Menghubungkan ke server")
-            resetConnection += 1
-            print(resetConnection)
-            if resetConnection > 1:
-                print("Request Time Out")
-                summary.data()
-                break
-            time.sleep(1)
-
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -75,11 +59,9 @@ while True:
         
         if not summary.data():
             print("Sedang memproses")
-            break
         else:
-            break
             # break
-            # print("break") 
+            print("break") 
     
 
 cam.release()

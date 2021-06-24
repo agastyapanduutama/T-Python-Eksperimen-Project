@@ -17,7 +17,7 @@ connection = client_socket.makefile('wb')
 # Load Video
 videoFile = "/home/pandu/Documents/eksperimen/video/s_cuci_tangan11.mp4"
 
-cam = cv2.VideoCapture(1)
+cam = cv2.VideoCapture(videoFile)
 cam.set(3, 320)
 cam.set(4, 240)
 
@@ -72,12 +72,11 @@ while True:
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     else:
-        
-        if not summary.data():
-            print("Sedang memproses")
-            break
-        else:
-            break
+        break
+        # if not summary.data():
+        #     print("Sedang memproses")
+        # else:
+        #     break
             # break
             # print("break") 
     
