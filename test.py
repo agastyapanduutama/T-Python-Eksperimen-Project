@@ -66,10 +66,10 @@ def summariseTheResult(poseCount, totalFrames):
 model = load_model("/home/pandu/Documents/eksperimen/model/16jun21.h5")
 # model.summary()
 os.system("clear")
-
+ 
 ## Video Part
 videoPath = "/home/pandu/Documents/eksperimen/video/"
-videoFile = "s_cuci_tangan11.mp4"
+videoFile = "s_cuci_tangan15.mp4"
 
 cap = cv2.VideoCapture(videoPath+videoFile)
 # url = "http://192.168.1.3:4747/video?640x480"
@@ -102,15 +102,15 @@ labels = ['1', '2', '3', '4' ,'5', '6', 'Tidak ada gerakan']
 
 poseCount = np.zeros(7, dtype=int)
 
-while True:
-# while(True) and (frameIdx < (frameVideo-1)):
+# while True:
+while(True) and (frameIdx < (frameVideo-1)):
     ret, frame0 = cap.read()
     # time.sleep(00.09)
     # pct = (frameIdx/totalFrames)*100
     pct = frameIdx
     # frame0 = cv2.rotate(frame0, cv2.ROTATE_180)
     # frame0 = cv2.rotate(frame0, cv2.ROTATE_90_CLOCKWISE)
-    # frame0 = cv2.rotate(frame0, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    frame0 = cv2.rotate(frame0, cv2.ROTATE_90_COUNTERCLOCKWISE)
     frame0 = frame0
 
     M = frame0.shape[0]

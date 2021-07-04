@@ -10,7 +10,8 @@ import time
 from keras.models import load_model
 from keras.preprocessing import image
 # Another File Python
-# import summary
+import summary
+from summary import summariseTheResult
 import koneksi
 
 memulai = "INSERT INTO t_log(log)VALUES ('Menghubungkan server')"
@@ -22,8 +23,8 @@ model = load_model("/home/pandu/Documents/eksperimen/model/16jun21.h5")
 os.system("clear")
 
 # Set Connection
-HOST = 'localhost'
-PORT = 8080
+HOST = '192.168.1.17'
+PORT = 9090
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print('Socket created')
@@ -58,7 +59,12 @@ def showJson(poseCount, totalFrames):
     koneksi.cursor.execute(summary)
     koneksi.conn.commit()
     print("Berhasil memasukan ke database")
-    # summary.summariseTheResult(poseCount, totalFrames)
+    # summariseTheResult(poseCount, totalFrames)
+    # msg = "Hello World"
+    # conn.send(msg.encode())
+    # conn.close()
+    print('close')
+   
 
 while True:
     while len(data) < payload_size:
@@ -74,7 +80,6 @@ while True:
 
         data += conn.recv(4096)
 
-
     print("Done Recv: {}".format(len(data)))
     packed_msg_size = data[:payload_size]
     data = data[payload_size:]
@@ -88,6 +93,15 @@ while True:
     frame = pickle.loads(frame_data, fix_imports=True, encoding="bytes")
     frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
 
+    # Mengirim Pesan dari Several
+
+    
+    # Menerima Pesan dari klien
+    # message = conn.recv(1024).decode("UTF-8")
+    # print(message)
+
+
+
 
     # Predict Image
     test_image = image.img_to_array(frame)
@@ -98,6 +112,8 @@ while True:
     print("Gerakan terdeteksi gerakan :" + str(labels[np.argmax(result)]))
     poseCount[poseIdx[0]] = poseCount[poseIdx[0]] + 1
     totalFrames += 1
+
+
 
     # If not action
     label = labels[np.argmax(result)]
@@ -117,6 +133,12 @@ while True:
         showJson(poseCount, totalFrames)
         break
 
+
+
+
 cv2.destroyAllWindows()
+s.close()
+conn.close()
 
-
+# os.execv(__file__, sys.argv)
+os.system("python3 /home/pandu/Documents/eksperimen/eksperimenClasify/testAnotherFile/server.py")

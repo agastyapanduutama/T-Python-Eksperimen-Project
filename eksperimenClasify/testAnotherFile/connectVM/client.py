@@ -6,24 +6,20 @@ import time
 import pickle
 import zlib
 import numpy as np
-from tensorflow.python import client
 import summary
 import errno
-import os
 # import inspect
 
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client_socket.connect(('localhost', 8080))
+connection = client_socket.makefile('wb')
 
 # Load Video
 videoFile = "/home/pandu/Documents/eksperimen/video/s_cuci_tangan11.mp4"
 
-cam = cv2.VideoCapture(1)
+cam = cv2.VideoCapture(videoFile)
 cam.set(3, 320)
 cam.set(4, 240)
-
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect(('192.168.1.17', 9090))
-connection = client_socket.makefile('wb')
-
 
 img_counter = 0
 frameIdx = 0
@@ -60,17 +56,8 @@ while True:
         img_counter += 1
 
         try:
-            # print("mengirim data")
+            print("mengirim data")
             client_socket.sendall(struct.pack(">L", size) + data)
-
-            # Mengirim Pesan Ke Server
-            # client_socket.send(bytes("Mengirim data dari klien ke server", "UTF-8"))
-            
-            # Menerima Pesan dari server
-
-
-
-
         except socket.error as e:
             print("Menghubungkan ke server")
             resetConnection += 1
@@ -86,23 +73,13 @@ while True:
             break
     else:
         break
-        # msg = client_socket.recv(1024)
-        # while msg:
-        #     print('Received:' + msg.decode())
-        #     msg = client_socket.recv(1024)
-
-        # while not msg:
-        #     print("Please Wait")
-        #     time.sleep(1)
-
-        # break
-        # message = client_socket.recv(1024).decode("UTF-8")
-        # if message:
-        #     print(message)
-            
-        # print("harap tunggu")
-        # time.sleep(5)
-
+        # if not summary.data():
+        #     print("Sedang memproses")
+        # else:
+        #     break
+            # break
+            # print("break") 
+    
 
 cam.release()
 cv2.destroyAllWindows()
