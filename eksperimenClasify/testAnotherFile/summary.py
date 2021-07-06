@@ -1,12 +1,21 @@
 import koneksi
 from tkinter import *
+from tkinter import messagebox
 import numpy as np
 window = Tk()
+import sys
+import os
 
+
+def restartProgram():
+    messagebox.showinfo("Informasi", "Memuat ulang Aplikasi")
+    # os.system("python3 /home/pandu/Documents/eksperimen/eksperimenClasify/testAnotherFile/client.py")
+    sys.exit()
 
 def summariseTheResult(poseCount, totalFrames):
   window.title('Hasil Evaluasi Cuci Tangan')
   window.geometry("600x300+300+300")
+  # window.attributes('-fullscreen', True)
 
   secondPerFrame = 1/30
   posePctAcc = 0
@@ -50,6 +59,8 @@ def summariseTheResult(poseCount, totalFrames):
       text = ("Durasi Cuci Tangan: %3.2f  sec |  \n dilakukan teralu Singkat Minimal 40 Detik \n dan setiap gerakan dilakukan minimal 8 Detik ") % (poseDurationAcc)
 
   lb0 = Label(window, text=text, fg=textColour, font=("Helvetica", 12))
+  b = Button(window, text="Lakukan ulang", command=restartProgram, height=2, width=10)
+  b.pack(side=BOTTOM)
   yPost = 35 + yPost
   lb0.place(x=20, y=yPost)
   window.mainloop()

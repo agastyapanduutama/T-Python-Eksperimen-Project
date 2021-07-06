@@ -7,7 +7,7 @@ from keras.models import load_model
 from keras.preprocessing import image
 
 import time
-
+import screeninfo
 from tkinter import *
 window = Tk()
 
@@ -96,6 +96,7 @@ N = frame0.shape[1]
 M = int(ratio*M)
 N = int(ratio*N)
 
+screen = screeninfo.get_monitors()[0]
 
 noAction = 0
 labels = ['1', '2', '3', '4' ,'5', '6', 'Tidak ada gerakan']
@@ -129,7 +130,7 @@ while(True) and (frameIdx < (frameVideo-1)):
     b, g, r = cv2.split(inFrame)
     retR, tholdR = cv2.threshold(r, 50, 255, cv2.THRESH_BINARY)
     frameR = np.array(tholdR)
-    cv2.imshow('Treshold Channel R color', frameR)
+    # cv2.imshow('Treshold Channel R color', frameR)
 
 
     # HSV Color
@@ -139,7 +140,7 @@ while(True) and (frameIdx < (frameVideo-1)):
     frameHSV = np.array(tholdHSV)
     # Convert Color
     convertHSV = (255-frameHSV)
-    cv2.imshow('Treshold Channel H Color', convertHSV)
+    # cv2.imshow('Treshold Channel H Color', convertHSV)
 
 
     # RGB
@@ -166,22 +167,24 @@ while(True) and (frameIdx < (frameVideo-1)):
     print("Gerakan terdeteksi gerakan :" + str(labels[np.argmax(result)]))
     poseCount[poseIdx[0]] = poseCount[poseIdx[0]] + 1
 
-    position = (10, 40)
     frameIdxDisp = frameIdx + 10000
     frameIdxDispStr = str(frameIdxDisp)[1:]
 
     infoStr = "%2.2f" % (pct)
-    infoStr = "Frame No: "+frameIdxDispStr + \
-        " ["+infoStr+"%] Pose index: "+str(poseIdx[0])
-    print(infoStr)
+    infoStr = "Frame Ke: "+frameIdxDispStr +" Gerakan Ke: "+str(poseIdx[0])
+    # print(infoStr)
 
-    cv2.putText(frame, infoStr, position,cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0, 0), 2)
+    cv2.putText(frame0, infoStr, (10, 40),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0, 0), 2)
     cTime = time.time()
     fps = 1 / (cTime - pTime)
     pTime = cTime
-    cv2.putText(frame, f'FPS: {int(fps)}', (20, 70),
-                cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
-    cv2.imshow("RGB Video", frame)
+    cv2.putText(frame0, f'FPS: {int(fps)}', (120, 70),
+                cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 1)
+    cv2.namedWindow("RGB Video", cv2.WND_PROP_FULLSCREEN)
+    cv2.moveWindow("RGB Video", screen.x - 1, screen.y - 1)
+    cv2.setWindowProperty("RGB Video", cv2.WND_PROP_FULLSCREEN,
+                          cv2.WINDOW_FULLSCREEN)
+    cv2.imshow("RGB Video", frame0)
 
     # if saveVideo == True:
     #   out.write(frame)

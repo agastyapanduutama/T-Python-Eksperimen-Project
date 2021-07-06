@@ -23,8 +23,8 @@ model = load_model("/home/pandu/Documents/eksperimen/model/16jun21.h5")
 os.system("clear")
 
 # Set Connection
-HOST = '192.168.1.17'
-PORT = 9090
+HOST = 'localhost'
+PORT = 8080
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print('Socket created')

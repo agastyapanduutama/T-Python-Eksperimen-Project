@@ -16,12 +16,12 @@ import os
 # Load Video
 videoFile = "/home/pandu/Documents/eksperimen/video/s_cuci_tangan11.mp4"
 
-cam = cv2.VideoCapture(1)
+cam = cv2.VideoCapture(0)
 cam.set(3, 320)
 cam.set(4, 240)
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect(('192.168.1.17', 9090))
+client_socket.connect(('localhost', 8080))
 connection = client_socket.makefile('wb')
 
 
@@ -60,17 +60,7 @@ while True:
         img_counter += 1
 
         try:
-            # print("mengirim data")
             client_socket.sendall(struct.pack(">L", size) + data)
-
-            # Mengirim Pesan Ke Server
-            # client_socket.send(bytes("Mengirim data dari klien ke server", "UTF-8"))
-            
-            # Menerima Pesan dari server
-
-
-
-
         except socket.error as e:
             print("Menghubungkan ke server")
             resetConnection += 1
@@ -81,10 +71,10 @@ while True:
                 break
             time.sleep(1)
 
-
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     else:
+        # summary.data()
         break
         # msg = client_socket.recv(1024)
         # while msg:
@@ -106,3 +96,4 @@ while True:
 
 cam.release()
 cv2.destroyAllWindows()
+# os.system("python3 /home/pandu/Documents/eksperimen/eksperimenClasify/testAnotherFile/client.py")
